@@ -6,6 +6,7 @@ package petstore;
 // 2- Libraries
 
 
+
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.is;
 
 // 3-Class
 public class Pet {
@@ -31,7 +33,7 @@ public class Pet {
     public void incluirPet() throws IOException {
         String jsonBody = lerJson("db/petprimeiro.json");
 
-
+//Parte do rest assured
         //Sintaxe Gherkin
         //Dado - Quando - Então - Given - When - Then
 
@@ -44,7 +46,11 @@ public class Pet {
         .then() //Entao
                 .log().all() //preparacao para registrar a respostas
                 .statusCode(200)
+                .body("name", is("Bidu"))
+                .body("status", is("available"))
         ;
 
     }
+
+
 }
