@@ -5,8 +5,6 @@ package petstore;
 
 // 2- Libraries
 
-
-
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -79,5 +77,41 @@ public class Pet {
 
         System.out.println("O token é " + token);
     }
+    @Test (priority = 2)
+    public void alterarPet() throws IOException {
+        String jsonBody = lerJson("db/petsegundo.json");
 
+        given()
+                .contentType("application/json")
+                .log().all()
+                .body(jsonBody)
+        .when()
+                .put(uri)
+        .then()
+                .log().all()
+                .statusCode(200)
+                .body("name", is("Bidu"))
+                .body("status", is("sold"))
+
+        ;
+    }
+
+    @Test (priority = 3)
+    public void excluirPet(){
+        String petId = "2021230590";
+
+        given()
+                .contentType("application/json")
+                .log().all()
+        .when()
+                .delete(uri + "/" + petId)
+        .then()
+                .log().all()
+                .statusCode(200)
+                .body("code", is(200)) // verificar como esta na APi sem tem aspas
+                .body("type", is("unknown"))
+                .body("message", is(petId))
+
+        ;
+    }
 }
