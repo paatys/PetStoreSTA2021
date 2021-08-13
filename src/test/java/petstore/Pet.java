@@ -15,12 +15,13 @@ import java.nio.file.Paths;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.contains;
 
 // 3-Class
 public class Pet {
     // 3.1 - Attribute
 
-    String uri = "https://petstore.swagger.io/v2/pet"; // endere√ßo da entidade pet
+    String uri = "https://petstore.swagger.io/v2/pet"; // endereÁo da entidade pet
 
 
     //3 .2 - Method and Function
@@ -29,13 +30,13 @@ public class Pet {
     }
 
     // Incluir - Create - Post
-    @Test //identifica o metodo ou funcao como um teste para o TestNG ou Junit
+    @Test (priority = 0) //identifica o metodo ou funcao como um teste para o TestNG ou Junit
     public void incluirPet() throws IOException {
         String jsonBody = lerJson("db/petprimeiro.json");
 
 //Parte do rest assured
         //Sintaxe Gherkin
-        //Dado - Quando - Ent√£o - Given - When - Then
+        //Dado - Quando - Ent„o - Given - When - Then
 
         given() //Dado
                 .contentType("application/json") //comum em API REST - antigas era "text/xml"
@@ -48,9 +49,35 @@ public class Pet {
                 .statusCode(200)
                 .body("name", is("Bidu"))
                 .body("status", is("available"))
+                .body("category.name", is("dog")) //nao usar contains
+                .body("tags.name", contains("sta"))
         ;
 
     }
 
+    @Test (priority = 1)
+    public void consultarPet(){
+        String petId = "2021230590";
+
+        String token =
+        given()
+                .contentType("application/json")
+                .log().all()
+
+        .when()
+                .get(uri + "/"+ petId)
+        .then()
+                .log().all()
+                .statusCode(200)
+                .body("name", is("Bidu"))
+                .body("category.name", is("dog"))
+                .body("status", is("available"))
+        .extract()
+                .path("category.name")
+
+        ;
+
+        System.out.println("O token È " + token);
+    }
 
 }
